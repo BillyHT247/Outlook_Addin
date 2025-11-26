@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Email Code Task Pane</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 12px;
+      font-size: 13px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 6px 10px;
+    }
+    #status {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Email Code (Compose Test)</h3>
+  <p>This is a very simple compose task pane.</p>
+  <button id="btnTest">Test subject read</button>
+  <div id="status"></div>
+
+  <script>
+    Office.onReady(function () {
+      const btn = document.getElementById("btnTest");
+      if (btn) {
+        btn.addEventListener("click", testSubject);
+      }
+    });
+
+    function testSubject() {
+      const item = Office.context.mailbox.item;
+      if (!item || !item.subject) {
+        setStatus("No compose item available. Open this add-in while composing a message.");
+        return;
+      }
+
+      item.subject.getAsync(function (result) {
+        if (result.status === Office.AsyncResultStatus.Succeeded) {
+          setStatus("Current subject: " + (result.value || "(empty)"));
+        } else {
+          setStatus("Failed to read subject.");
+        }
+      });
+    }
+
+    function setStatus(msg) {
+      const el = document.getElementById("status");
+      if (el) {
+        el.textContent = msg;
+      }
+    }
+  </script>
+</body>
+</html>
