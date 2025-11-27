@@ -16,7 +16,7 @@
   <Description DefaultValue="Hamster Evolution codes outgoing emails and logs them." />
 
   <!-- Icon in the add-ins dialog -->
-  <IconUrl DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-80.png" />
+  <IconUrl DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution/evolution-80.png" />
 
   <SupportUrl DefaultValue="https://support.microsoft.com" />
 
@@ -35,7 +35,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution.html" />
+        <SourceLocation DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution/hamster-evolution.html" />
         <RequestedHeight>300</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -104,17 +104,17 @@
       <Resources>
         <bt:Images>
           <bt:Image id="Icon.16x16"
-                    DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-16.png" />
+                    DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution/evolution-16.png" />
           <bt:Image id="Icon.32x32"
-                    DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-32.png" />
+                    DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution/evolution-32.png" />
           <bt:Image id="Icon.80x80"
-                    DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-80.png" />
+                    DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution/evolution-80.png" />
         </bt:Images>
 
         <bt:Urls>
           <!-- Task pane + function file -->
           <bt:Url id="EmailCode.TaskPane.Url"
-                  DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution.html" />
+                  DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution/hamster-evolution.html" />
         </bt:Urls>
 
         <bt:ShortStrings>
