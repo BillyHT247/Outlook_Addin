@@ -27,7 +27,7 @@ function applyEmailCode() {
     !item.bcc ||
     item.itemType !== Office.MailboxEnums.ItemType.Message
   ) {
-    setStatus("Open Email Code while composing an email.");
+    setStatus("Open Hamster Evolution while composing an email.");
     return;
   }
 
@@ -42,7 +42,7 @@ function applyEmailCode() {
 
     const currentSubject = subjectResult.value || "";
 
-    // Remove any existing Email Code prefix to avoid stacking.
+    // Remove any existing Hamster Evolution prefix to avoid stacking.
     const prefixRegex =
       /^(HP|QH|TWP|TWM|TWE|NTW) - (A|I|D|Q|R) - (1m|3m|5m|10m|15m|30m|60m|1\+h) - /;
 
@@ -57,9 +57,9 @@ function applyEmailCode() {
       // 2) Ensure logging BCC is present
       ensureLoggingBcc(item, (bccOk) => {
         if (bccOk) {
-          setStatus("Email Code applied.");
+          setStatus("Hamster Evolution applied.");
         } else {
-          setStatus("Code applied, but BCC could not be updated.");
+          setStatus("Email Code applied, but BCC could not be updated.");
         }
       });
     });
