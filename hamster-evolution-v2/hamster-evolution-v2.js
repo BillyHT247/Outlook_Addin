@@ -13,10 +13,10 @@
   <DefaultLocale>en-US</DefaultLocale>
 
   <DisplayName DefaultValue="Hamster Evolution" />
-  <Description DefaultValue="Hamster Evolution codes outgoing emails and logs them." />
+  <Description DefaultValue="Add WHEN / TYPE / TIME and logging BCC to composed emails." />
 
   <!-- Icon in the add-ins dialog -->
-  <IconUrl DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-80.png" />
+  <IconUrl DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/icon-64.png" />
 
   <SupportUrl DefaultValue="https://support.microsoft.com" />
 
@@ -35,7 +35,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution.html" />
+        <SourceLocation DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/hamster-evolution-v2.html" />
         <RequestedHeight>300</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -71,18 +71,18 @@
           <DesktopFormFactor>
 
             <!-- FunctionFile is required; we reuse the same page as our task pane -->
-            <FunctionFile resid="EmailCode.TaskPane.Url" />
+            <FunctionFile resid="hamster-evolution-v2.TaskPane.Url" />
 
             <!-- Compose ribbon button -->
             <ExtensionPoint xsi:type="MessageComposeCommandSurface">
               <OfficeTab id="TabDefault">
-                <Group id="EmailCode.Group">
-                  <Label resid="EmailCode.Group.Label" />
-                  <Control xsi:type="Button" id="EmailCode.Button">
-                    <Label resid="EmailCode.Button.Label" />
+                <Group id="hamster-evolution-v2.Group">
+                  <Label resid="hamster-evolution-v2.Group.Label" />
+                  <Control xsi:type="Button" id="hamster-evolution-v2.Button">
+                    <Label resid="hamster-evolution-v2.Button.Label" />
                     <Supertip>
-                      <Title resid="EmailCode.Button.Label" />
-                      <Description resid="EmailCode.Button.Tooltip" />
+                      <Title resid="hamster-evolution-v2.Button.Label" />
+                      <Description resid="hamster-evolution-v2.Button.Tooltip" />
                     </Supertip>
                     <Icon>
                       <bt:Image size="16" resid="Icon.16x16" />
@@ -90,7 +90,7 @@
                       <bt:Image size="80" resid="Icon.80x80" />
                     </Icon>
                     <Action xsi:type="ShowTaskpane">
-                      <SourceLocation resid="EmailCode.TaskPane.Url" />
+                      <SourceLocation resid="hamster-evolution-v2.TaskPane.Url" />
                     </Action>
                   </Control>
                 </Group>
@@ -104,26 +104,26 @@
       <Resources>
         <bt:Images>
           <bt:Image id="Icon.16x16"
-                    DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-16.png" />
+                    DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/icon-16.png" />
           <bt:Image id="Icon.32x32"
-                    DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-32.png" />
+                    DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/icon-32.png" />
           <bt:Image id="Icon.80x80"
-                    DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-80.png" />
+                    DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/icon-80.png" />
         </bt:Images>
 
         <bt:Urls>
           <!-- Task pane + function file -->
-          <bt:Url id="EmailCode.TaskPane.Url"
-                  DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution.html" />
+          <bt:Url id="hamster-evolution-v2.TaskPane.Url"
+                  DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/hamster-evolution-v2.html" />
         </bt:Urls>
 
         <bt:ShortStrings>
-          <bt:String id="EmailCode.Group.Label" DefaultValue="Hamster Evolution" />
-          <bt:String id="EmailCode.Button.Label" DefaultValue="Hamster Evolution" />
+          <bt:String id="hamster-evolution-v2.Group.Label" DefaultValue="Hamster Evolution" />
+          <bt:String id="hamster-evolution-v2.Button.Label" DefaultValue="Hamster Evolution" />
         </bt:ShortStrings>
 
         <bt:LongStrings>
-          <bt:String id="EmailCode.Button.Tooltip"
+          <bt:String id="hamster-evolution-v2.Button.Tooltip"
                      DefaultValue="Open Hamster Evolution to set WHEN / TYPE / TIME and add the logging BCC." />
         </bt:LongStrings>
       </Resources>
