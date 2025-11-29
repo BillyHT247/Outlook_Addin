@@ -7,7 +7,7 @@
   xsi:type="MailApp">
 
   <!-- New GUID for this add-in -->
-  <Id>1c3434d6-d45b-40fa-afbc-43a9b2f70a7c</Id>
+  <Id>1c3434d6-d45b-40fa-afbc-43a9b2f70a7d</Id>
   <Version>1.0.0.0</Version>
   <ProviderName>Billy Taylor</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
