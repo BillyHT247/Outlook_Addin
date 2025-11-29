@@ -1,110 +1,97 @@
-﻿const LOG_ADDRESS =
-  "email-log-appsRuWy6BC5D4NuW.2aca-wtrgt8WWx3ZdCuIaY.2a98@automations.airtableemail.com";
+﻿<!-- Written by Billy Taylor-->
 
-Office.onReady(() => {
-  const btn = document.getElementById("applyCodeButton");
-  if (btn) {
-    btn.addEventListener("click", applyEmailCode);
-  }
-});
-
-function applyEmailCode() {
-  const whenCode = getSelectValue("whenSelect");
-  const typeCode = getSelectValue("typeSelect");
-  const timeCode = getSelectValue("timeSelect");
-
-  if (!whenCode || !typeCode || !timeCode) {
-    setStatus("Please select WHEN, TYPE, and TIME.");
-    return;
-  }
-
-  const item = Office.context.mailbox.item;
-
-  // Must be a compose message with subject + BCC access.
-  if (
-    !item ||
-    !item.subject ||
-    !item.bcc ||
-    item.itemType !== Office.MailboxEnums.ItemType.Message
-  ) {
-    setStatus("Open Hamster Evolution while composing an email.");
-    return;
-  }
-
-  const prefix = `${whenCode} - ${typeCode} - ${timeCode} - `;
-
-  // 1) Update the subject
-  item.subject.getAsync((subjectResult) => {
-    if (subjectResult.status !== Office.AsyncResultStatus.Succeeded) {
-      setStatus("Could not read the subject.");
-      return;
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Hamster Evolution</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 12px;
+      font-size: 13px;
     }
 
-    const currentSubject = subjectResult.value || "";
-
-    // Remove any existing prefix to avoid stacking.
-    const prefixRegex =
-      /^(HP|QH|TWP|TWM|TWE|NTW) - (A|I|D|Q|R) - (1m|3m|5m|10m|15m|30m|60m|1\+h) - /;
-
-    const strippedSubject = currentSubject.replace(prefixRegex, "");
-
-    item.subject.setAsync(prefix + strippedSubject, (setSubjectResult) => {
-      if (setSubjectResult.status !== Office.AsyncResultStatus.Succeeded) {
-        setStatus("Could not set the subject.");
-        return;
-      }
-
-      // 2) Ensure logging BCC is present
-      ensureLoggingBcc(item, (bccOk) => {
-        if (bccOk) {
-          setStatus("Hamster Evolution applied.");
-        } else {
-          setStatus("Hamster Evolution applied, but BCC could not be updated.");
-        }
-      });
-    });
-  });
-}
-
-function ensureLoggingBcc(item, callback) {
-  item.bcc.getAsync((bccResult) => {
-    if (bccResult.status !== Office.AsyncResultStatus.Succeeded) {
-      callback(false);
-      return;
+    h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 16px;
     }
 
-    let recipients = bccResult.value || [];
-
-    const exists = recipients.some(
-      (r) =>
-        r &&
-        r.emailAddress &&
-        r.emailAddress.toLowerCase() === LOG_ADDRESS.toLowerCase()
-    );
-
-    if (exists) {
-      callback(true);
-      return;
+    label {
+      display: block;
+      margin-top: 8px;
+      margin-bottom: 2px;
+      font-weight: 500;
     }
 
-    // Copy and append our logging address.
-    recipients = recipients.slice();
-    recipients.push({ emailAddress: LOG_ADDRESS, displayName: "" });
+    select {
+      width: 100%;
+      padding: 4px;
+      box-sizing: border-box;
+    }
 
-    item.bcc.setAsync(recipients, (setResult) => {
-      callback(setResult.status === Office.AsyncResultStatus.Succeeded);
-    });
-  });
-}
+    button {
+      margin-top: 12px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
 
-function getSelectValue(id) {
-  const el = document.getElementById(id);
-  return el ? el.value : "";
-}
+    #status {
+      margin-top: 8px;
+      min-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Hamster Evolution</h3>
 
-function setStatus(message) {
-  const el = document.getElementById("status");
-  if (el) {
-    el.textContent = message;
-  }
-}
+  <p>Select the codes for this email, then click <strong>Apply</strong>.</p>
+
+  <!-- WHEN -->
+  <label for="whenSelect">WHEN</label>
+  <select id="whenSelect">
+    <option value="">-- select --</option>
+    <option value="HP">High Priority (HP)</option>
+    <option value="QH">Quick Handling (QH)</option>
+    <option value="TWP">This Week – Planning (TWP)</option>
+    <option value="TWM">This Week – Monitoring (TWM)</option>
+    <option value="TWE">This Week – Escalation (TWE)</option>
+    <option value="NTW">Next Week (NTW)</option>
+  </select>
+
+  <!-- TYPE -->
+  <label for="typeSelect">TYPE</label>
+  <select id="typeSelect">
+    <option value="">-- select --</option>
+    <option value="A">Action Required (A)</option>
+    <option value="I">Information Only (I)</option>
+    <option value="D">Decision Needed (D)</option>
+    <option value="Q">Question (Q)</option>
+    <option value="R">Response Required (R)</option>
+  </select>
+
+  <!-- TIME -->
+  <label for="timeSelect">TIME</label>
+  <select id="timeSelect">
+    <option value="">-- select --</option>
+    <option value="1m">1 minute (1m)</option>
+    <option value="3m">3 minutes (3m)</option>
+    <option value="5m">5 minutes (5m)</option>
+    <option value="10m">10 minutes (10m)</option>
+    <option value="15m">15 minutes (15m)</option>
+    <option value="30m">30 minutes (30m)</option>
+    <option value="60m">60 minutes (60m)</option>
+    <option value="1+h">1+ hour (1+h)</option>
+  </select>
+
+  <button id="applyCodeButton">Apply</button>
+
+  <div id="status"></div>
+
+  <script src="hamster-evolution.js"></script>
+</body>
+</html>
