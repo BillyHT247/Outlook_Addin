@@ -1,111 +1,133 @@
-﻿<!-- This code was written by Billy Taylor-->
-const LOG_ADDRESS =
-  "email-log-appsRuWy6BC5D4NuW.2aca-wtrgt8WWx3ZdCuIaY.2a98@automations.airtableemail.com";
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
+  xsi:type="MailApp">
 
-Office.onReady(() => {
-  const btn = document.getElementById("applyCodeButton");
-  if (btn) {
-    btn.addEventListener("click", applyEmailCode);
-  }
-});
+  <!-- New GUID for this add-in -->
+  <Id>1c3434d6-d45b-40fa-afbc-43a9b2f70a7c</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>Billy Taylor</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
 
-function applyEmailCode() {
-  const whenCode = getSelectValue("whenSelect");
-  const typeCode = getSelectValue("typeSelect");
-  const timeCode = getSelectValue("timeSelect");
+  <DisplayName DefaultValue="Hamster Evolution" />
+  <Description DefaultValue="Hamster Evolution codes outgoing emails and logs them." />
 
-  if (!whenCode || !typeCode || !timeCode) {
-    setStatus("Please select WHEN, TYPE, and TIME.");
-    return;
-  }
+  <!-- Icon in the add-ins dialog -->
+  <IconUrl DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-80.png" />
 
-  const item = Office.context.mailbox.item;
+  <SupportUrl DefaultValue="https://support.microsoft.com" />
 
-  // Must be a compose message with subject + BCC access.
-  if (
-    !item ||
-    !item.subject ||
-    !item.bcc ||
-    item.itemType !== Office.MailboxEnums.ItemType.Message
-  ) {
-    setStatus("Open Hamster Evolution while composing an email.");
-    return;
-  }
+  <Hosts>
+    <Host Name="Mailbox" />
+  </Hosts>
 
-  const prefix = `${whenCode} - ${typeCode} - ${timeCode} - `;
+  <!-- Base requirements: we only target clients with commands support -->
+  <Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.3" />
+    </Sets>
+  </Requirements>
 
-  // 1) Update the subject
-  item.subject.getAsync((subjectResult) => {
-    if (subjectResult.status !== Office.AsyncResultStatus.Succeeded) {
-      setStatus("Could not read the subject.");
-      return;
-    }
+  <!-- Legacy FormSettings for old clients; modern clients will use VersionOverrides -->
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution.html" />
+        <RequestedHeight>300</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+  </FormSettings>
 
-    const currentSubject = subjectResult.value || "";
+  <!-- Read/write item so we can change subject and BCC -->
+  <Permissions>ReadWriteItem</Permissions>
 
-    // Remove any existing prefix to avoid stacking.
-    const prefixRegex =
-      /^(HP|QH|TWP|TWM|TWE|NTW) - (A|I|D|Q|R) - (1m|3m|5m|10m|15m|30m|60m|1\+h) - /;
+  <!-- Legacy activation rule for old clients (message read). -->
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read" />
+  </Rule>
 
-    const strippedSubject = currentSubject.replace(prefixRegex, "");
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
 
-    item.subject.setAsync(prefix + strippedSubject, (setSubjectResult) => {
-      if (setSubjectResult.status !== Office.AsyncResultStatus.Succeeded) {
-        setStatus("Could not set the subject.");
-        return;
-      }
+  <!-- Commands + compose button for modern Outlook -->
+  <VersionOverrides
+    xmlns="http://schemas.microsoft.com/office/mailappversionoverrides"
+    xsi:type="VersionOverridesV1_0">
 
-      // 2) Ensure logging BCC is present
-      ensureLoggingBcc(item, (bccOk) => {
-        if (bccOk) {
-          setStatus("Hamster Evolution applied.");
-        } else {
-          setStatus("Hamster Evolution applied, but BCC could not be updated.");
-        }
-      });
-    });
-  });
-}
+    <VersionOverrides
+      xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1"
+      xsi:type="VersionOverridesV1_1">
 
-function ensureLoggingBcc(item, callback) {
-  item.bcc.getAsync((bccResult) => {
-    if (bccResult.status !== Office.AsyncResultStatus.Succeeded) {
-      callback(false);
-      return;
-    }
+      <Requirements>
+        <bt:Sets DefaultMinVersion="1.3">
+          <bt:Set Name="Mailbox" />
+        </bt:Sets>
+      </Requirements>
 
-    let recipients = bccResult.value || [];
+      <Hosts>
+        <Host xsi:type="MailHost">
+          <DesktopFormFactor>
 
-    const exists = recipients.some(
-      (r) =>
-        r &&
-        r.emailAddress &&
-        r.emailAddress.toLowerCase() === LOG_ADDRESS.toLowerCase()
-    );
+            <!-- FunctionFile is required; we reuse the same page as our task pane -->
+            <FunctionFile resid="EmailCode.TaskPane.Url" />
 
-    if (exists) {
-      callback(true);
-      return;
-    }
+            <!-- Compose ribbon button -->
+            <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+              <OfficeTab id="TabDefault">
+                <Group id="EmailCode.Group">
+                  <Label resid="EmailCode.Group.Label" />
+                  <Control xsi:type="Button" id="EmailCode.Button">
+                    <Label resid="EmailCode.Button.Label" />
+                    <Supertip>
+                      <Title resid="EmailCode.Button.Label" />
+                      <Description resid="EmailCode.Button.Tooltip" />
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16x16" />
+                      <bt:Image size="32" resid="Icon.32x32" />
+                      <bt:Image size="80" resid="Icon.80x80" />
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="EmailCode.TaskPane.Url" />
+                    </Action>
+                  </Control>
+                </Group>
+              </OfficeTab>
+            </ExtensionPoint>
 
-    // Copy and append our logging address.
-    recipients = recipients.slice();
-    recipients.push({ emailAddress: LOG_ADDRESS, displayName: "" });
+          </DesktopFormFactor>
+        </Host>
+      </Hosts>
 
-    item.bcc.setAsync(recipients, (setResult) => {
-      callback(setResult.status === Office.AsyncResultStatus.Succeeded);
-    });
-  });
-}
+      <Resources>
+        <bt:Images>
+          <bt:Image id="Icon.16x16"
+                    DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-16.png" />
+          <bt:Image id="Icon.32x32"
+                    DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-32.png" />
+          <bt:Image id="Icon.80x80"
+                    DefaultValue="https://billyht247.github.io/Outlook_Addin/evolution-80.png" />
+        </bt:Images>
 
-function getSelectValue(id) {
-  const el = document.getElementById(id);
-  return el ? el.value : "";
-}
+        <bt:Urls>
+          <!-- Task pane + function file -->
+          <bt:Url id="EmailCode.TaskPane.Url"
+                  DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution.html" />
+        </bt:Urls>
 
-function setStatus(message) {
-  const el = document.getElementById("status");
-  if (el) {
-    el.textContent = message;
-  }
-}
+        <bt:ShortStrings>
+          <bt:String id="EmailCode.Group.Label" DefaultValue="Hamster Evolution" />
+          <bt:String id="EmailCode.Button.Label" DefaultValue="Hamster Evolution" />
+        </bt:ShortStrings>
+
+        <bt:LongStrings>
+          <bt:String id="EmailCode.Button.Tooltip"
+                     DefaultValue="Open Hamster Evolution to set WHEN / TYPE / TIME and add the logging BCC." />
+        </bt:LongStrings>
+      </Resources>
+
+    </VersionOverrides>
+  </VersionOverrides>
+</OfficeApp>
