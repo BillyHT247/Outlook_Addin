@@ -114,7 +114,7 @@
         <bt:Urls>
           <!-- Task pane + function file -->
           <bt:Url id="EmailCode.TaskPane.Url"
-                  DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/hamster-evolution.html" />
+                  DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/hamster-evolution-v2.html" />
         </bt:Urls>
 
         <bt:ShortStrings>
