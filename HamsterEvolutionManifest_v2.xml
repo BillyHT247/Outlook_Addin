@@ -12,8 +12,8 @@
   <ProviderName>Billy Taylor</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
 
-  <DisplayName DefaultValue="Hamster Evolution" />
-  <Description DefaultValue="Hamster Evolution codes outgoing emails and logs them." />
+  <DisplayName DefaultValue="Hamster Evolution v2" />
+  <Description DefaultValue="Hamster Evolution v2 codes outgoing emails and logs them." />
 
   <!-- Icon in the add-ins dialog -->
   <IconUrl DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/evolution-80.png" />
@@ -35,7 +35,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/hamster-evolution.html" />
+        <SourceLocation DefaultValue="https://billyht247.github.io/Outlook_Addin/hamster-evolution-v2/hamster-evolution-v2.html" />
         <RequestedHeight>300</RequestedHeight>
       </DesktopSettings>
     </Form>
