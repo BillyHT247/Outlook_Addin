@@ -1,4 +1,4 @@
-﻿<!-- Written by Billy Taylor-->
+﻿<!-- This code was written by Billy Taylor-->
 
 <!DOCTYPE html>
 <html>
