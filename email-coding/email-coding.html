@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Hamster Evolution v2</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 12px;
+      font-size: 13px;
+    }
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    label {
+      display: block;
+      margin-top: 8px;
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+
+    select {
+      width: 100%;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 12px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 8px;
+      min-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Email Coding</h3>
+
+  <p>Select the codes for this email, then click <strong>Apply</strong>.</p>
+
+  <!-- WHEN -->
+  <label for="whenSelect">WHEN</label>
+  <select id="whenSelect">
+    <option value="">-- select --</option>
+    <option value="HP">High Priority (HP)</option>
+    <option value="QH">Quick Handling (QH)</option>
+    <option value="TWP">This Week – Planning (TWP)</option>
+    <option value="TWM">This Week – Monitoring (TWM)</option>
+    <option value="TWE">This Week – Escalation (TWE)</option>
+    <option value="NTW">Next Week (NTW)</option>
+  </select>
+
+  <!-- TYPE -->
+  <label for="typeSelect">TYPE</label>
+  <select id="typeSelect">
+    <option value="">-- select --</option>
+    <option value="A">Action Required (A)</option>
+    <option value="I">Information Only (I)</option>
+    <option value="D">Decision Needed (D)</option>
+    <option value="Q">Question (Q)</option>
+    <option value="R">Response Required (R)</option>
+  </select>
+
+  <!-- TIME -->
+  <label for="timeSelect">TIME</label>
+  <select id="timeSelect">
+    <option value="">-- select --</option>
+    <option value="1m">1 minute (1m)</option>
+    <option value="3m">3 minutes (3m)</option>
+    <option value="5m">5 minutes (5m)</option>
+    <option value="10m">10 minutes (10m)</option>
+    <option value="15m">15 minutes (15m)</option>
+    <option value="30m">30 minutes (30m)</option>
+    <option value="60m">60 minutes (60m)</option>
+    <option value="1+h">1+ hour (1+h)</option>
+  </select>
+
+  <button id="applyCodeButton">Apply</button>
+
+  <div id="status"></div>
+
+  <script src="email-coding.js"></script>
+</body>
+</html>
