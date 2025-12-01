@@ -1,5 +1,6 @@
 ﻿const LOG_ADDRESS =
-  "email-log-appsRuWy6BC5D4NuW.2aca-wtrgt8WWx3ZdCuIaY.2a98@automations.airtableemail.com";
+  // "email-log-appsRuWy6BC5D4NuW.2aca-wtrgt8WWx3ZdCuIaY.2a98@automations.airtableemail.com";
+  "";
 
 Office.onReady(() => {
   const btn = document.getElementById("applyCodeButton");
