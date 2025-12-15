@@ -1,7 +1,7 @@
-﻿// Email Coding – subject + body header
+﻿// Email Coding – subject + body header (no BCC)
+// Uses a <div id="emailCodingHeader"> wrapper to update in-place.
 
-const HEADER_START = "<!-- EMAIL_CODING_HEADER_START -->";
-const HEADER_END = "<!-- EMAIL_CODING_HEADER_END -->";
+const HEADER_DIV_ID = "emailCodingHeader";
 
 Office.onReady(() => {
   const btn = document.getElementById("applyCodeButton");
@@ -9,7 +9,7 @@ Office.onReady(() => {
     btn.addEventListener("click", applyEmailCode);
   }
 
-  // Optional: show/hide custom time row
+  // Show/hide custom time row based on mode
   const timeMode = document.getElementById("dueTimeMode");
   const customRow = document.getElementById("dueCustomTimeRow");
   if (timeMode && customRow) {
@@ -74,7 +74,7 @@ function applyEmailCode() {
   });
 }
 
-// Insert / update the 3-line header at the top of the email body
+// Insert / update the header block at the top of the email body
 function updateEmailBodyHeader(item, typeCode, timeCode) {
   const headerInputEl = document.getElementById("headerInput");
   const headerText = headerInputEl
@@ -114,19 +114,8 @@ function updateEmailBodyHeader(item, typeCode, timeCode) {
 
       let body = bodyResult.value || "";
 
-      // Remove any existing Email Coding header block
-      const startIndex = body.indexOf(HEADER_START);
-      if (startIndex !== -1) {
-        const endIndex = body.indexOf(HEADER_END, startIndex);
-        if (endIndex !== -1) {
-          const afterEnd = endIndex + HEADER_END.length;
-          let remainder = body.slice(afterEnd);
-
-          // Remove a leading <br> after the block, if present
-          remainder = remainder.replace(/^<br\s*\/?>/i, "");
-          body = body.slice(0, startIndex) + remainder;
-        }
-      }
+      // Remove any existing header <div id="emailCodingHeader">...</div>
+      body = removeExistingHeaderDiv(body);
 
       // If no header/effort/due lines to insert, we're done
       if (lines.length === 0) {
@@ -149,12 +138,9 @@ function updateEmailBodyHeader(item, typeCode, timeCode) {
 
       const escapedLines = lines.map(escapeHtml);
       const headerHtml =
-        HEADER_START +
-        "<p>" +
+        `<div id="${HEADER_DIV_ID}"><p>` +
         escapedLines.join("<br>") +
-        "</p>" +
-        HEADER_END +
-        "<br>";
+        "</p></div><br>";
 
       const newBody = headerHtml + body;
 
@@ -176,6 +162,28 @@ function updateEmailBodyHeader(item, typeCode, timeCode) {
       );
     }
   );
+}
+
+// Remove our header wrapper div, plus a following <br> if present
+function removeExistingHeaderDiv(html) {
+  const marker = `<div id="${HEADER_DIV_ID}">`;
+  const startIndex = html.indexOf(marker);
+  if (startIndex === -1) {
+    return html;
+  }
+
+  const closeIndex = html.indexOf("</div>", startIndex);
+  if (closeIndex === -1) {
+    return html;
+  }
+
+  const afterDiv = closeIndex + "</div>".length;
+  let remainder = html.slice(afterDiv);
+
+  // Remove a single leading <br> after the header if present
+  remainder = remainder.replace(/^<br\s*\/?>/i, "");
+
+  return html.slice(0, startIndex) + remainder;
 }
 
 // Build the Due: line (for TYPE = A only)
