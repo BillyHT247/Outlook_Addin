@@ -1,7 +1,6 @@
-﻿// Email Coding – subject + body header (no BCC)
-// Uses a <div id="emailCodingHeader"> wrapper to update in-place.
+﻿// Email Coding – subject + one-time body header (no BCC)
 
-const HEADER_DIV_ID = "emailCodingHeader";
+let headerAlreadyApplied = false; // per-pane session
 
 Office.onReady(() => {
   const btn = document.getElementById("applyCodeButton");
@@ -46,7 +45,7 @@ function applyEmailCode() {
 
   const prefix = `${whenCode} - ${typeCode} - ${timeCode} - `;
 
-  // Read & update subject first
+  // Read & update subject
   item.subject.getAsync((subjectResult) => {
     if (subjectResult.status !== Office.AsyncResultStatus.Succeeded) {
       setStatus("Could not read the subject.");
@@ -68,14 +67,18 @@ function applyEmailCode() {
         return;
       }
 
-      // After subject is updated, update the body header
-      updateEmailBodyHeader(item, typeCode, timeCode);
+      // First Apply in this pane session -> also write body header
+      if (!headerAlreadyApplied) {
+        writeInitialBodyHeader(item, typeCode, timeCode);
+      } else {
+        setStatus("Email Coding applied (subject only; header unchanged).");
+      }
     });
   });
 }
 
-// Insert / update the header block at the top of the email body
-function updateEmailBodyHeader(item, typeCode, timeCode) {
+// One-time header insert; never called again for this pane session
+function writeInitialBodyHeader(item, typeCode, timeCode) {
   const headerInputEl = document.getElementById("headerInput");
   const headerText = headerInputEl
     ? headerInputEl.value.trim()
@@ -104,43 +107,29 @@ function updateEmailBodyHeader(item, typeCode, timeCode) {
     lines.push("Due: " + dueInfo);
   }
 
+  // If nothing to insert, we're done (subject is already updated)
+  if (lines.length === 0) {
+    headerAlreadyApplied = true;
+    disableBodyControls();
+    setStatus("Email Coding applied (subject only; no header content to add).");
+    return;
+  }
+
   item.body.getAsync(
     Office.CoercionType.Html,
     (bodyResult) => {
       if (bodyResult.status !== Office.AsyncResultStatus.Succeeded) {
-        setStatus("Could not read the email body.");
+        headerAlreadyApplied = true;
+        disableBodyControls();
+        setStatus("Subject updated; could not read email body.");
         return;
       }
 
-      let body = bodyResult.value || "";
-
-      // Remove any existing header <div id="emailCodingHeader">...</div>
-      body = removeExistingHeaderDiv(body);
-
-      // If no header/effort/due lines to insert, we're done
-      if (lines.length === 0) {
-        item.body.setAsync(
-          body,
-          { coercionType: Office.CoercionType.Html },
-          (setBodyResult) => {
-            if (
-              setBodyResult.status !==
-              Office.AsyncResultStatus.Succeeded
-            ) {
-              setStatus("Subject updated; body header unchanged.");
-            } else {
-              setStatus("Email Coding applied (subject only).");
-            }
-          }
-        );
-        return;
-      }
+      const body = bodyResult.value || "";
 
       const escapedLines = lines.map(escapeHtml);
       const headerHtml =
-        `<div id="${HEADER_DIV_ID}"><p>` +
-        escapedLines.join("<br>") +
-        "</p></div><br>";
+        "<p>" + escapedLines.join("<br>") + "</p><br>";
 
       const newBody = headerHtml + body;
 
@@ -148,45 +137,23 @@ function updateEmailBodyHeader(item, typeCode, timeCode) {
         newBody,
         { coercionType: Office.CoercionType.Html },
         (setBodyResult) => {
+          headerAlreadyApplied = true;
+          disableBodyControls();
           if (
             setBodyResult.status !==
             Office.AsyncResultStatus.Succeeded
           ) {
             setStatus(
-              "Subject updated, but could not update body header."
+              "Subject updated; could not write email header."
             );
           } else {
-            setStatus("Email Coding applied. 1");
+            setStatus("Email Coding applied (subject + header).");
           }
         }
       );
     }
   );
 }
-
-// Remove all existing header <div id="emailCodingHeader">...</div> blocks
-// plus a leading <br> (or <p><br></p>) after the last one.
-function removeExistingHeaderDiv(html) {
-  // Match any <div ... id="emailCodingHeader" ...>...</div>, case-insensitive,
-  // allowing extra attributes and any content inside.
-  const divRegex = new RegExp(
-    "<div[^>]*id=([\"'])" +
-      HEADER_DIV_ID +
-      "\\1[^>]*>[\\s\\S]*?<\\/div>",
-    "ig"
-  );
-
-  let newHtml = html.replace(divRegex, "");
-
-  // After removing, also strip one leading <br> or <p><br></p> at the very start.
-  newHtml = newHtml.replace(
-    /^(\s*<br\s*\/?>|\s*<p>\s*<br\s*\/?>\s*<\/p>)/i,
-    ""
-  );
-
-  return newHtml;
-}
-
 
 // Build the Due: line (for TYPE = A only)
 function buildDueInfo() {
@@ -250,6 +217,23 @@ function buildDueInfo() {
   }
 
   return `${formattedDate} ${timePart}`;
+}
+
+function disableBodyControls() {
+  const ids = [
+    "headerInput",
+    "dueDate",
+    "dueTimeMode",
+    "dueHour",
+    "dueMinute",
+    "dueAmPm",
+  ];
+  ids.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.disabled = true;
+    }
+  });
 }
 
 function getSelectValue(id) {
