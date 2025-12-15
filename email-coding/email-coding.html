@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Hamster Evolution v2</title>
+  <title>Email Coding</title>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <style>
     body {
@@ -24,10 +24,14 @@
       font-weight: 500;
     }
 
-    select {
+    select,
+    input[type="text"],
+    input[type="date"],
+    input[type="number"] {
       width: 100%;
       padding: 4px;
       box-sizing: border-box;
+      font-size: 13px;
     }
 
     button {
@@ -42,6 +46,32 @@
       margin-top: 8px;
       min-height: 18px;
     }
+
+    fieldset {
+      margin-top: 8px;
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    fieldset legend {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 0 4px;
+    }
+
+    #dueCustomTimeRow {
+      margin-top: 6px;
+    }
+
+    #dueCustomTimeRow > div {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    #dueCustomTimeRow input[type="number"] {
+      width: 3.2em;
+    }
   </style>
 </head>
 <body>
@@ -53,38 +83,88 @@
   <label for="whenSelect">WHEN</label>
   <select id="whenSelect">
     <option value="">-- select --</option>
-    <option value="HP">High Priority (HP)</option>
-    <option value="QH">Quick Handling (QH)</option>
-    <option value="TWP">This Week – Planning (TWP)</option>
-    <option value="TWM">This Week – Monitoring (TWM)</option>
-    <option value="TWE">This Week – Escalation (TWE)</option>
-    <option value="NTW">Next Week (NTW)</option>
+    <option value="HP">HP (High Priority)</option>
+    <option value="QH">QH (Quick Hit max. 5 mins)</option>
+    <option value="TWP">TWP (This Week) Planned</option>
+    <option value="TWM">TWM (This Week) Miss</option>
+    <option value="TWE">TWE (This Week) Exception</option>
+    <option value="NTW">NTW (Not this Week)</option>
   </select>
 
   <!-- TYPE -->
   <label for="typeSelect">TYPE</label>
   <select id="typeSelect">
     <option value="">-- select --</option>
-    <option value="A">Action Required (A)</option>
-    <option value="I">Information Only (I)</option>
-    <option value="D">Decision Needed (D)</option>
-    <option value="Q">Question (Q)</option>
-    <option value="R">Response Required (R)</option>
+    <option value="A">(A)ction</option>
+    <option value="I">(I)nfo</option>
+    <option value="D">(D)elivery</option>
+    <option value="Q">(Q)uestion</option>
+    <option value="R">(R)esponse</option>
   </select>
 
   <!-- TIME -->
-  <label for="timeSelect">TIME</label>
+  <label for="timeSelect">TIME (Effort)</label>
   <select id="timeSelect">
     <option value="">-- select --</option>
-    <option value="1m">1 minute (1m)</option>
-    <option value="3m">3 minutes (3m)</option>
-    <option value="5m">5 minutes (5m)</option>
-    <option value="10m">10 minutes (10m)</option>
-    <option value="15m">15 minutes (15m)</option>
-    <option value="30m">30 minutes (30m)</option>
-    <option value="60m">60 minutes (60m)</option>
-    <option value="1+h">1+ hour (1+h)</option>
+    <option value="1m">(1m) 1 minute</option>
+    <option value="3m">(3m) 3 minutes</option>
+    <option value="5m">(5m) 5 minutes</option>
+    <option value="10m">(10m) 10 minutes</option>
+    <option value="15m">(15m) 15 minutes</option>
+    <option value="30m">(30m) 30 minutes</option>
+    <option value="60m">(60m) 60 minutes</option>
+    <option value="1h+">(1h+) 1+ hour</option>
   </select>
+
+  <!-- HEADER (user-written, not the subject) -->
+  <label for="headerInput">Header</label>
+  <input
+    id="headerInput"
+    type="text"
+    placeholder="One sentence summary (user written)"
+  />
+
+  <!-- DUE (only used when TYPE = A, but always visible for now) -->
+  <fieldset id="dueSection">
+    <legend>Due (Action emails)</legend>
+
+    <label for="dueDate">Due date</label>
+    <input type="date" id="dueDate" />
+
+    <label for="dueTimeMode">Due time</label>
+    <select id="dueTimeMode">
+      <option value="">-- none --</option>
+      <option value="EOB">EOB</option>
+      <option value="EOD">EOD</option>
+      <option value="CUSTOM">Custom time</option>
+    </select>
+
+    <div id="dueCustomTimeRow">
+      <label style="margin-top: 4px;">Custom time</label>
+      <div>
+        <input
+          id="dueHour"
+          type="number"
+          min="1"
+          max="12"
+          placeholder="HH"
+        />
+        :
+        <input
+          id="dueMinute"
+          type="number"
+          min="0"
+          max="59"
+          placeholder="MM"
+        />
+        <select id="dueAmPm">
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+        <span>ET</span>
+      </div>
+    </div>
+  </fieldset>
 
   <button id="applyCodeButton">Apply</button>
 
