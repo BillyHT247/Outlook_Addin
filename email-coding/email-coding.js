@@ -164,27 +164,29 @@ function updateEmailBodyHeader(item, typeCode, timeCode) {
   );
 }
 
-// Remove our header wrapper div, plus a following <br> if present
+// Remove all existing header <div id="emailCodingHeader">...</div> blocks
+// plus a leading <br> (or <p><br></p>) after the last one.
 function removeExistingHeaderDiv(html) {
-  const marker = `<div id="${HEADER_DIV_ID}">`;
-  const startIndex = html.indexOf(marker);
-  if (startIndex === -1) {
-    return html;
-  }
+  // Match any <div ... id="emailCodingHeader" ...>...</div>, case-insensitive,
+  // allowing extra attributes and any content inside.
+  const divRegex = new RegExp(
+    "<div[^>]*id=([\"'])" +
+      HEADER_DIV_ID +
+      "\\1[^>]*>[\\s\\S]*?<\\/div>",
+    "ig"
+  );
 
-  const closeIndex = html.indexOf("</div>", startIndex);
-  if (closeIndex === -1) {
-    return html;
-  }
+  let newHtml = html.replace(divRegex, "");
 
-  const afterDiv = closeIndex + "</div>".length;
-  let remainder = html.slice(afterDiv);
+  // After removing, also strip one leading <br> or <p><br></p> at the very start.
+  newHtml = newHtml.replace(
+    /^(\s*<br\s*\/?>|\s*<p>\s*<br\s*\/?>\s*<\/p>)/i,
+    ""
+  );
 
-  // Remove a single leading <br> after the header if present
-  remainder = remainder.replace(/^<br\s*\/?>/i, "");
-
-  return html.slice(0, startIndex) + remainder;
+  return newHtml;
 }
+
 
 // Build the Due: line (for TYPE = A only)
 function buildDueInfo() {
