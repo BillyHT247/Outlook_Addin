@@ -156,7 +156,7 @@ function updateEmailBodyHeader(item, typeCode, timeCode) {
               "Subject updated, but could not update body header."
             );
           } else {
-            setStatus("Email Coding applied.");
+            setStatus("Email Coding applied. 1");
           }
         }
       );
