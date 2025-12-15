@@ -8,18 +8,6 @@ Office.onReady(() => {
     btn.addEventListener("click", applyEmailCode);
   }
 
-  // Show/hide Due section based on TYPE (A only)
-  const typeSelect = document.getElementById("typeSelect");
-  const dueSection = document.getElementById("dueSection");
-  if (typeSelect && dueSection) {
-    const updateDueVisibility = () => {
-      dueSection.style.display =
-        typeSelect.value === "A" ? "block" : "none";
-    };
-    typeSelect.addEventListener("change", updateDueVisibility);
-    updateDueVisibility(); // set initial state
-  }
-
   // Show/hide custom time row based on mode
   const timeMode = document.getElementById("dueTimeMode");
   const customRow = document.getElementById("dueCustomTimeRow");
@@ -32,7 +20,6 @@ Office.onReady(() => {
     updateCustomVisibility();
   }
 });
-
 
 function applyEmailCode() {
   const whenCode = getSelectValue("whenSelect");
@@ -84,7 +71,7 @@ function applyEmailCode() {
       if (!headerAlreadyApplied) {
         writeInitialBodyHeader(item, typeCode, timeCode);
       } else {
-        setStatus("Email Coding applied (subject only; body unchanged).");
+        setStatus("Email Coding applied (subject only; header unchanged).");
       }
     });
   });
