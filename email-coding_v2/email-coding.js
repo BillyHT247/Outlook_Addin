@@ -94,7 +94,7 @@ function writeInitialBodyHeader(item, typeCode, timeCode) {
 
   // Header: user-written line (if any)
   if (headerText) {
-    lines.push("Header: " + headerText);
+    lines.push("Headline: " + headerText);
   }
 
   // Effort: TIME code, only for A/I/D
